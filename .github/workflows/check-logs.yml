@@ -24,12 +24,18 @@ jobs:
           ruby << "RUBY"
           errors = []
           File.foreach("access.log") do |line|
-            status = line.to_i
+            status = line.split[8].to_i
             if status < 200 || status > 299
-              errors << status
+              errors << line
             end
           end
-          puts errors
+          if errors.any? 
+            puts "Errors found:"
+            puts errors
+            exit 1
+          else
+            puts "All responses successful"
+          end
           RUBY
 
 
