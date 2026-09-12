@@ -1,0 +1,40 @@
+name: Check HTTP Logs
+
+on:
+  push:
+    branches: 
+      - main
+
+  pull_request:
+    branches: 
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-logs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download repository code
+        uses: actions/checkout@v6
+
+      - name: Check for errors
+        run: |
+          echo "Checking HTTP Status Codes..."
+          ruby << "RUBY"
+          errors = []
+          File.foreach("access.log") do |line|
+            status = line.to_i
+            if status < 200 || status > 299
+              errors << status
+            end
+          end
+          puts errors
+          RUBY
+
+
+
+
+
